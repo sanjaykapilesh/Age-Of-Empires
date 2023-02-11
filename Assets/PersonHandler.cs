@@ -11,6 +11,7 @@ public class PersonHandler : MonoBehaviour
     void Start()
     {
         logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LogicManager>(); 
+
     }
 
     // Update is called once per frame
@@ -34,7 +35,7 @@ public class PersonHandler : MonoBehaviour
                 myRigidbody.velocity = Vector2.down * flightStrength;
             }
 
-            if(myRigidbody.position.x < -35 || myRigidbody.position.y < -25){
+            if(myRigidbody.position.x < -35 || myRigidbody.position.y < -25 || myRigidbody.position.x > 35 || myRigidbody.position.y > 25){
                 logic.handlePlayerDead();
             }
         }
@@ -43,6 +44,6 @@ public class PersonHandler : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        logic.reducePlayerScore(10);
+        logic.reducePlayerScore();
     }
 }
