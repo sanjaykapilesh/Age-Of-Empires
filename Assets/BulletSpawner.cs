@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class BulletSpawner : MonoBehaviour
 {
+
+    private LogicManager logic;
     /*
     * Array of enemy positions in the screen
     */
@@ -26,6 +28,7 @@ public class BulletSpawner : MonoBehaviour
         bullet.transform.position = enemyPositions[Random.Range(0,3)];
         Instantiate(bullet);
         bullet.SetActive(true);
+        logic.reduceEnemyScore(1);
         // bullet.SetPosition()
     }
 
@@ -36,6 +39,7 @@ public class BulletSpawner : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LogicManager>(); 
         spawnBullet();
     }
 
@@ -43,11 +47,14 @@ public class BulletSpawner : MonoBehaviour
     // This method controls the spawn rate of the bullet
     void Update()
     {
-        if(timer < spawnRate){
-            timer = timer + Time.deltaTime;
-        } else {
-            spawnBullet();
-            timer = 0;
+        if(logic.isPlayerAlive){
+            if(timer < spawnRate){
+                timer = timer + Time.deltaTime;
+            } else {
+                spawnBullet();
+                timer = 0;
+            }
         }
+        
     }
 }
