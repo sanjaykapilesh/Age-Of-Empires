@@ -40,6 +40,7 @@ public class BulletSpawner : MonoBehaviour
     }
 
     // Update is called once per frame
+    // This method controls the spawn rate of the bullet
     void Update()
     {
         if(timer < spawnRate){
