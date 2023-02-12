@@ -8,10 +8,12 @@ using System.IO;
 
 public class LogicManager : MonoBehaviour
 {
+
+    private const int totalEnemyBullets = 20;
     // Start is called before the first frame update
     private int attackScore;
     private int playerHealth = 100;
-    private int enemyTotalBullets = 100;
+    private int enemyTotalBullets = totalEnemyBullets;
     public Text playerScoreText;
     public Text enemyBulletText;
     private int gameLevel = 1;
@@ -20,10 +22,20 @@ public class LogicManager : MonoBehaviour
     public GameObject gameWinScreen;
     public GameObject enemyLayerLevel1;
     public GameObject enemyLayerLevel2;
+    public GameObject enemyLayerLevel3;
+
     public GameObject spawnLayer1;
     public GameObject spawnLayer2;
+    public GameObject spawnLayer3;
+
+    public Camera mainCamera;
 
     public bool isPlayerAlive = true;
+
+    private Color bgWhite = Color.white;
+    private Color bgGray = Color.gray;
+    private Color bgBlack = Color.black;
+    public float duration = 13.0F;
 
     public IDictionary<string, int> enemyTypes = new Dictionary<string, int>(){
         {"stone", 1},
@@ -54,12 +66,31 @@ public class LogicManager : MonoBehaviour
      return null;                     // Return null if load failed
    }
 
-    public void changeGameLevel(){
-        enemyLayerLevel1.SetActive(false);
-        enemyLayerLevel2.SetActive(true);
+    public void changeGameLevel(int level){
+        if(level == 2){
+            enemyLayerLevel1.SetActive(false);
+            enemyLayerLevel2.SetActive(true);
 
-        spawnLayer1.SetActive(false);
-        spawnLayer2.SetActive(true);
+            spawnLayer1.SetActive(false);
+            spawnLayer2.SetActive(true);
+        } else if(level == 3){
+
+            enemyLayerLevel2.SetActive(false);
+            enemyLayerLevel3.SetActive(true);
+
+            spawnLayer2.SetActive(false);
+            spawnLayer3.SetActive(true);
+        } 
+        // else {
+        //     spawnLayer1.SetActive(false);
+        //     spawnLayer2.SetActive(false);
+        //     spawnLayer3.SetActive(false);
+
+        //     enemyLayerLevel1.SetActive(false);
+        //     enemyLayerLevel2.SetActive(false);
+        //     enemyLayerLevel3.SetActive(false);
+        // }
+        
     }
 
     [ContextMenu("Reduce Player Score")]
@@ -86,15 +117,16 @@ public class LogicManager : MonoBehaviour
     public void reduceEnemyScore(int scoreToReduce){
         enemyTotalBullets -= scoreToReduce;
         
-        if(gameLevel == 3){
+        if(gameLevel == 4){
             gameWinScreen.SetActive(true);
             isPlayerAlive = false;
         }
 
         if(enemyTotalBullets <= 0){
-            changeGameLevel();
-            enemyTotalBullets = 100;
             gameLevel+=1;
+            enemyTotalBullets = totalEnemyBullets * gameLevel;
+            duration = duration * gameLevel;
+            changeGameLevel(gameLevel);
         } 
         
 
@@ -112,5 +144,17 @@ public class LogicManager : MonoBehaviour
 
     public void gameOver(){
         gameOverScreen.SetActive(true);
+    }
+
+    public void handleChangeCameraBackground(){
+        float t = Mathf.PingPong(Time.time, duration) / duration;
+        mainCamera.clearFlags = CameraClearFlags.SolidColor;
+        if(gameLevel == 1){
+            mainCamera.backgroundColor = Color.Lerp(bgWhite, bgGray, t);
+        } else if(gameLevel == 2){
+            mainCamera.backgroundColor = Color.Lerp(bgGray, bgBlack, t);
+        } else {
+            mainCamera.backgroundColor = Color.Lerp(bgBlack, bgBlack, t);
+        }
     }
 }

@@ -25,7 +25,7 @@ public class BulletSpawner : MonoBehaviour
     * The starting point of the bullet is from `enemyPositions`
     */
     void spawnBullet(){
-        bullet.transform.position = enemyPositions[Random.Range(0,3)];
+        bullet.transform.position = enemyPositions[Random.Range(0,3)]; 
         Instantiate(bullet);
         bullet.SetActive(true);
         logic.reduceEnemyScore(1);
@@ -47,6 +47,7 @@ public class BulletSpawner : MonoBehaviour
     // This method controls the spawn rate of the bullet
     void Update()
     {
+        logic.handleChangeCameraBackground();
         if(logic.isPlayerAlive){
             if(timer < spawnRate){
                 timer = timer + Time.deltaTime;
