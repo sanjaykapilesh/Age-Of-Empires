@@ -16,7 +16,11 @@ public class LogicManager : MonoBehaviour
     private int enemyTotalBullets = totalEnemyBullets;
     public Text playerScoreText;
     public Text enemyBulletText;
+    public Text levelText;
     private int gameLevel = 1;
+    
+    public GameObject player;
+    public GameObject enemyWeapon;
 
     public GameObject gameOverScreen;
     public GameObject gameWinScreen;
@@ -36,6 +40,12 @@ public class LogicManager : MonoBehaviour
     private Color bgGray = Color.gray;
     private Color bgBlack = Color.black;
     public float duration = 13.0F;
+
+    public AudioClip gamePlayBackgroundMusic;
+    public AudioClip gameWinClip;
+    public AudioClip gameLoseClip;
+    public AudioClip playerJumpClip;
+    public AudioClip mainVillainClip;
 
     public IDictionary<string, int> enemyTypes = new Dictionary<string, int>(){
         {"stone", 1},
@@ -67,6 +77,7 @@ public class LogicManager : MonoBehaviour
    }
 
     public void changeGameLevel(int level){
+        levelText.text = level.ToString();
         if(level == 2){
             enemyLayerLevel1.SetActive(false);
             enemyLayerLevel2.SetActive(true);
@@ -113,13 +124,22 @@ public class LogicManager : MonoBehaviour
         }
     }
 
+    public void handleGameWin(){
+        gameWinScreen.SetActive(true);
+        isPlayerAlive = false;
+        // enemyLayerLevel3.SetActive(false);
+        Rigidbody2D rigidBody = player.GetComponent<Rigidbody2D>();
+        Rigidbody2D rigidBodyEnemy = enemyWeapon.GetComponent<Rigidbody2D>();
+        rigidBody.gravityScale = 0;
+        rigidBodyEnemy.gravityScale = 0.8f;
+    }
+
     [ContextMenu("Reduce Enemy Score")]
     public void reduceEnemyScore(int scoreToReduce){
         enemyTotalBullets -= scoreToReduce;
         
         if(gameLevel == 4){
-            gameWinScreen.SetActive(true);
-            isPlayerAlive = false;
+            handleGameWin();
         }
 
         if(enemyTotalBullets <= 0){

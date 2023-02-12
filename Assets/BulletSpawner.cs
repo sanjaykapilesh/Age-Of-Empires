@@ -40,6 +40,9 @@ public class BulletSpawner : MonoBehaviour
     void Start()
     {
         logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LogicManager>(); 
+        // AudioSource audio = GetComponent<AudioSource>();
+        // audio.clip = logic.gamePlayBackgroundMusic;
+        // audio.Play();
         spawnBullet();
     }
 
